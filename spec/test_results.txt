@@ -1,0 +1,6 @@
+Lions 4, Tigers 3
+Lions 2, House Cats 0
+Lions 1, Leopards 0
+Tigers 3, House Cats 1
+Tigers 1, Leopards 1
+House Cats 2, Leopards 3
