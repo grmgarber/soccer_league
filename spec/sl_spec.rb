@@ -38,25 +38,18 @@ describe SoccerLeague do
   end
 
   describe '#process_games' do
-    it 'keeps the standings hash current' do
-      subject.process_games './spec/test_results.txt'
-      expect(subject.standings.size).to eq(4)
-      expect(subject.standings['Lions']).to eq(9)
-      expect(subject.standings['Tigers']).to eq(4)
-      expect(subject.standings['Leopards']).to eq(4)
-      expect(subject.standings['House Cats']).to eq(0)
-    end
-
-    it 'processes the default input file when no arguments passed' do
-      expect(subject).to receive(:read_data).with('./grmgarber/sample-input.txt')
-      subject.process_games
-    end
-
-    it 'works OK when the data file is missing or another IO exception' do
+    it 'displays the error if the input file does not exist' do
       expect(subject).to receive(:puts).with(
         'Error processing input data file ./missing.txt: No such file or directory @ rb_sysopen - ./missing.txt'
       )
       expect { subject.process_games './missing.txt' }.to_not raise_error
+    end
+
+    it 'reads input file and displays teams standings' do
+      expect(subject).to receive(:read_data).with('./spec/test_results.txt')
+      expect(subject).to receive(:display_standings)
+
+      subject.process_games('./spec/test_results.txt')
     end
   end
 
@@ -77,10 +70,18 @@ describe SoccerLeague do
   end
 
   describe '#read_data' do
-    it 'invokes record_game_result as many times as there are lines in the input' do
+    it 'invokes record_game_result for each input line' do
       expect(subject).to receive(:record_game_result).exactly(6).times
       subject.send(:read_data, './spec/test_results.txt')
     end
+
+    it 'properly maintains current standings' do
+      subject.send(:read_data, './spec/test_results.txt')
+      expect(subject.standings.size).to eq(4)
+      expect(subject.standings['Lions']).to eq(9)
+      expect(subject.standings['Tigers']).to eq(4)
+      expect(subject.standings['Leopards']).to eq(4)
+      expect(subject.standings['House Cats']).to eq(0)
+    end
   end
 end
-

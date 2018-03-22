@@ -1,14 +1,13 @@
 # Read results of soccer games from a file (ggarber/sample-input.txt)
 # and display the team standings.
-# Run it as follows:
-# ruby -e "require './soccer_league.rb'; SoccerLeague.process"
+# USAGE:
+# ruby soccer_league.rb <games_results_filespec>
 class SoccerLeague
   GAME_RESULT_REGEX = /\A(.+)\s(\d+)\,\s(.+)\s(\d+)\Z/
   WIN_POINTS = 3
   DRAW_POINTS = 1
   PT_SINGULAR = 'pt'.freeze
   PT_PLURAL = 'pts'.freeze
-  DEFAULT_INPUT_FILE_SPEC = './grmgarber/sample-input.txt'.freeze
 
   attr_reader :standings # hash of TeamName => NbrOfPoints
 
@@ -16,11 +15,7 @@ class SoccerLeague
     @standings = {}
   end
 
-  def self.process
-    new.process_games
-  end
-
-  def process_games(game_results_file_spec = DEFAULT_INPUT_FILE_SPEC)
+  def process_games(game_results_file_spec)
     read_data(game_results_file_spec)
     display_standings
   end
@@ -72,3 +67,9 @@ class SoccerLeague
     "#{nbr_of_points} #{nbr_of_points == 1 ? PT_SINGULAR : PT_PLURAL}"
   end
 end
+
+if ARGV.size != 1
+  puts 'USAGE: ruby soccer_league.rb <league_games_results_filespec>'
+  exit 0
+end
+SoccerLeague.new.process_games(ARGV.first)
